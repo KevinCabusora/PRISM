@@ -88,7 +88,7 @@ begin
 	-- Reset_L control, will only be loaded if PCLd is high, and must choose between two data sources
 	-- based on the JmpSel line.  NOTE:  THIS IS THE ONLY PLACE WHERE UNSIGNED IS USED.
 	
-	process(Clock,Reset_L)
+	process(Clock, Reset_L)
   	begin				 
 	  if(Reset_L = '0') then
 		  	PC <= "00000000";
@@ -106,66 +106,64 @@ begin
 	-- asynchronous Reset_L line and clocked data input.  Which control signal also determines
 	-- when data is loaded?  What are the inputs and outputs from the register?
 	
-	process(          )
-  	begin				 
-	  
-
-
-
-
-
-
-  	end process;   
+	process(Clock, Reset_L)
+  	begin
+		if(Reset_L = '0') then
+			IR <= "0000";
+		elsif (Clock'event and Clock='1' and IRLd = '1') then
+			IR <= Data;
+		end if;
+	end process;  
 	  	
 	  	
 	-- Complete the code to implement an Memory Address Register (Hi).  Use a standard register with an 
 	-- asynchronous Reset_L line and clocked data input.  Which control signal also determines
 	-- when data is loaded?	 What are the inputs and outputs from the register?
 
-	process(          )
+	process(Clock, Reset_L)
   	begin				 
-	  
-
-
-
-
-
-
-  	end process;       
+	  if(Reset_L = '0') then
+			MARHi <= "0000";
+		elsif (Clock'event and Clock='1' and MARHiLd = '1') then
+			MARHi <= Data;
+		end if;
+	end process;
 
 	-- Complete the code to implement an Memory Address Register (Lo).  Use a standard register with an 
 	-- asynchronous Reset_L line and clocked data input.  Which control signal also determines
 	-- when data is loaded?	 What are the inputs and outputs from the register?
 	
-	process(          )
+	process(Clock, Reset_L)
   	begin				 
-	  
-
-
-
-
-
-
-  	end process;   
+	  if(Reset_L = '0') then
+			MARLo <= "0000";
+		elsif (clock'event and Clock='1' and MARLoLd = '1') then
+			MARLO <= Data;
+		end if;
+	end process;
 	  
 	-- Complete the code to implement an Address Selector (multiplexer) which determines between two data sources
 	-- (which two?) based on the AddrSel line. Be careful - the process sensitivity list has 4 signals!
 	
-	process(          )
+	process(AddrSel, MARHi, MARLo, PC)
   	begin				 
-	  
-
-
-
-
-
-
-  	end process;   
+		if (AddrSel = '1') then
+			Addr(7 downto 4) <= MARHi;
+			Addr(3 downto 0) <= MARLo;
+		else 			
+			Addr <= PC;
+		end if;
+	end process;
 		
 	
 	  		
 	-- Instantiate and connect the ALU  which was written in a separate file
-	
+	arithmator: ALU port map(
+		OpSel => OpSel,
+		Data => Data,
+		Accumulator => Accumulator,
+		Result => ALU_Result
+	);
 
 
 
@@ -174,27 +172,25 @@ begin
 	-- Complete the code to implement an Accumulator.  Use a standard register with an 
 	-- asynchronous Reset_L line and clocked data input.  Which control signal also determines
 	-- when data is loaded?	   What are the inputs and outputs from the register?
-	process(          )
+	process(Clock, Reset_L)
   	begin				 
-	  
-
-
-
-
-
-
-  	end process;     
+	 if (Reset_L = '0') then
+		Accumulator <= "0000";
+		elsif (Clock'event and Clock='1' and AccLd ='1') then
+			Accumulator <= ALU_Result;
+		end if;
+	end process;
+	
 	  
 	-- Complete the code to implement a tri-state buffer which places the Accumulator data on the 
 	-- Data Bus when enabled and goes to High Z the rest of the time	
 	-- Note: use "Z" just like a bit.  If you want to set a signal to  High Z, you'd say mySignal <= 'Z';
-	Data <=          when             else         ;
+	Data <= Accumulator when EnAccBuffer else (Others => 'Z');
 	  
   	-- Complete the code to implement the Datapath status signals --
-   	AlessZero <=   			--Uses MSB as a sign bit
-  	AeqZero <= 
-
+   	AlessZero <=  Accumulator(3); 			--Uses MSB as a sign bit
+  	AeqZero <= '1' when Accumulator = "0000" else '0';
+	
 			   
 			   
-end Datapath;
-
+end Datapath
