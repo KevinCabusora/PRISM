@@ -3,9 +3,9 @@ PRISM
 
 #### Lab 4, Kevin Cabusora, Dr. Neebel, ECE281, 15 April 2014
 
-# DESIGN
+## DESIGN
 
-## Discussion of ALU Modifications
+### Discussion of ALU Modifications
 
 ![alt text][Schematic.PNG]
 
@@ -35,7 +35,7 @@ IN took in the Data, and therefore the result was Data.  The same went for LD.
 
 ADD took the unisgned std logic vector values of the Data and Accumulator and added them together that way.
 
-## ALU Test and Debug
+### ALU Test and Debug
 
 [ALU testbench](ALU_testbench.vhd)
 
@@ -45,7 +45,7 @@ ADD took the unisgned std logic vector values of the Data and Accumulator and ad
 
 I checked my syntax with the shell, and then used the ALU_testbench.vhd file.  The ADD output looked strange on the testbench, so I went back to check what was wrong with the original shell.  Apparently I did not account for the fact that doing Result <= Data + Accumulator was not enough.  Therefore, I made them unsigned in std logic vector.  My testbench then worked beautifully afterwards.
 
-## Discussion of Datapath Modifications
+### Discussion of Datapath Modifications
 
 [Datapath](Datapath_shell.vhd)
 
@@ -69,7 +69,7 @@ Next, I made a tri-state buffer which placed the Accumulator data on the Data Bu
 
 I then defined the AlessZero and AeqZero functions, which were all self-explanatory.  AeqZero would be enabled and defined as '1' whenver Accumulator would = "0000".  If not, it would be defined as '0'.  AlessZero would be defined as Accumulator(3).
 
-## Datapath Test and Debug
+### Datapath Test and Debug
 
 ![alt text][Datapath_testbench.png]
 
@@ -79,15 +79,15 @@ I then defined the AlessZero and AeqZero functions, which were all self-explanat
 
 I used the attached testbench to test my design.  However, there appeared to be syntax errors in my code.  It only happened to be mere confusion between using apostrophes and quotes (ex. "0000" as opposed to '0000').  After that, I verified that my code was correct.
 
-## Discussion of Testbench Operation
+### Discussion of Testbench Operation
 
 The testbench represented the cycle of functions of the PRISM, and it represented the schematic and process of the Datapath and ALU portions and their outputs.
 
-# REVERSE ENGINEERING
+## REVERSE ENGINEERING
 
-## Simulation Analysis
+### Simulation Analysis
 
-### 50-100 ns
+#### 50-100 ns
 
 ![alt text][50-100ns.PNG]
 
@@ -106,13 +106,13 @@ The next cycle then rotates the bits in the Accumulator once.
 
 The next instruction is 4 which corresponds with OUT, which then outputs it to Output Port 3.
 
-### 225 ns Jump
+#### 225 ns Jump
 
 At 225 ns is a rising edge.  At 226 ns, data reads 7, which is the JMP function.
 
 Aeqzero has a value of 0 but Alesszero has a value of 1.  Therefore the value in the accumulator is negative.
 
-# PRISM
+## PRISM
 
 Here is the PRISM program implemented into PRISM.
 
@@ -120,7 +120,7 @@ Here is the PRISM program implemented into PRISM.
 
 [PRISM Implementation.PNG]:  https://github.com/KevinCabusora/PRISM/blob/master/PRISM%20Implementation.PNG?raw=true "PRISM Implementation.PNG"
 
-# Documentation
+## Documentation
 
 I received help from C3C Erik Thompson in understanding why my ADD function would not work, and he suggested to make them unsigned.  
 
